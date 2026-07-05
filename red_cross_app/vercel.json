@@ -1,0 +1,5 @@
+{
+  "buildCommand": "echo \"static build\"",
+  "outputDirectory": "build/web",
+  "installCommand": "npm install"
+}
