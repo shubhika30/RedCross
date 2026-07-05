@@ -1,5 +1,11 @@
 {
   "buildCommand": "echo \"static build\"",
   "outputDirectory": "build/web",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
