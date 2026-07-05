@@ -2,7 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = "http://10.244.193.240:5000/api";
+  class ApiConfig {
+  static const String baseUrl = String.fromEnvironment(
+    "BASE_URL",
+    defaultValue: "https://redcross-backend-je7s.onrender.com/api",
+  );
+}
 
   // =========================
   // TOKEN MANAGEMENT
@@ -32,7 +37,7 @@ static String? _mobile;
   // =========================
   static Future<Map<String, dynamic>> sendOtp(String mobile) async {
     final response = await http.post(
-      Uri.parse("$baseUrl/auth/send-otp"),
+      Uri.parse("${ApiConfig.baseUrl}/auth/send-otp"),
       headers: _headers(),
       body: jsonEncode({"mobile": mobile}),
     );
@@ -48,7 +53,7 @@ static Future<Map<String, dynamic>> verifyOtp(
   String otp,
 ) async {
   final response = await http.post(
-    Uri.parse("$baseUrl/auth/verify-otp"),
+    Uri.parse("${ApiConfig.baseUrl}/auth/verify-otp"),
     headers: _headers(),
     body: jsonEncode({
       "mobile": mobile,
@@ -74,7 +79,7 @@ static Future<Map<String, dynamic>> verifyOtp(
       String mobile,
       String password) async {
     final response = await http.post(
-      Uri.parse("$baseUrl/auth/admin-login"),
+      Uri.parse("${ApiConfig.baseUrl}/auth/admin-login"),
       headers: _headers(),
       body: jsonEncode({
         "mobile": mobile,
@@ -100,7 +105,7 @@ static Future<Map<String, dynamic>> createAdmin(
   String password,
 ) async {
   final response = await http.post(
-    Uri.parse("$baseUrl/auth/create-admin"),
+    Uri.parse("${ApiConfig.baseUrl}/auth/create-admin"),
     headers: _headers(auth: true),
     body: jsonEncode({
       "mobile": mobile,
@@ -115,7 +120,7 @@ static Future<Map<String, dynamic>> createAdmin(
 // =========================
 static Future<Map<String, dynamic>> getPublicCamps() async {
   final response = await http.get(
-    Uri.parse("$baseUrl/camps/public/all"),
+    Uri.parse("${ApiConfig.baseUrl}/camps/public/all"),
     headers: _headers(),
   );
 
@@ -130,7 +135,7 @@ static Future<Map<String, dynamic>> registerCamp(
     Map<String, dynamic> data) async {
 
   final response = await http.post(
-    Uri.parse("$baseUrl/registrations/register"),
+    Uri.parse("${ApiConfig.baseUrl}/registrations/register"),
     headers: _headers(auth: true),
     body: jsonEncode(data),
   );
@@ -143,7 +148,7 @@ static Future<Map<String, dynamic>> registerCamp(
   // =========================
   static Future<Map<String, dynamic>> getAllCamps() async {
     final response = await http.get(
-      Uri.parse("$baseUrl/camps"),
+      Uri.parse("${ApiConfig.baseUrl}/camps"),
       headers: _headers(auth: true),
     );
 
@@ -156,7 +161,7 @@ static Future<Map<String, dynamic>> registerCamp(
   static Future<Map<String, dynamic>> createCamp(
     Map<String, dynamic> data) async {
   final response = await http.post(
-    Uri.parse("$baseUrl/camps/create"),
+    Uri.parse("${ApiConfig.baseUrl}/camps/create"),
     headers: _headers(auth: true),
     body: jsonEncode(data),
   );
@@ -169,7 +174,7 @@ static Future<Map<String, dynamic>> registerCamp(
   // =========================
   static Future<Map<String, dynamic>> deleteCamp(String id) async {
     final response = await http.delete(
-      Uri.parse("$baseUrl/camps/delete/$id"),
+      Uri.parse("${ApiConfig.baseUrl}/camps/delete/$id"),
       headers: _headers(auth: true),
     );
 
@@ -181,7 +186,7 @@ static Future<Map<String, dynamic>> registerCamp(
   // =========================
   static Future<Map<String, dynamic>> getCampDetails(String id) async {
     final response = await http.get(
-    Uri.parse("$baseUrl/camps/details/$id"),
+    Uri.parse("${ApiConfig.baseUrl}/camps/details/$id"),
     headers: _headers(auth: true),
   );
 
@@ -193,7 +198,7 @@ static Future<Map<String, dynamic>> registerCamp(
   // =========================
   static Future<http.Response> downloadCampReport(String id) async {
     final response = await http.get(
-      Uri.parse("$baseUrl/camps/$id/report"),
+      Uri.parse("${ApiConfig.baseUrl}/camps/$id/report"),
       headers: _headers(auth: true),
     );
 

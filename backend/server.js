@@ -21,7 +21,23 @@ connectDB();
 
 // Middlewares
 app.use(helmet());
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://your-frontend-domain.com" // replace after deployment
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+app.options("*", cors());
 app.use(express.json());
 app.use(generalLimiter);
 
