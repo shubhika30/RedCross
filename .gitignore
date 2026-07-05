@@ -1,0 +1,19 @@
+# Node.js
+backend/node_modules/
+backend/.env
+backend/.env.*
+
+# Flutter
+red_cross_app/.dart_tool/
+red_cross_app/build/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
