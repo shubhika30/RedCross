@@ -1,19 +1,25 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class ApiService {
-  class ApiConfig {
+// =========================
+// API CONFIG (FIXED)
+// =========================
+class ApiConfig {
   static const String baseUrl = String.fromEnvironment(
     "BASE_URL",
     defaultValue: "https://redcross-backend-je7s.onrender.com/api",
   );
 }
 
+// =========================
+// API SERVICE
+// =========================
+class ApiService {
   // =========================
   // TOKEN MANAGEMENT
   // =========================
   static String? _token;
-static String? _mobile;
+  static String? _mobile;
 
   static void setToken(String token) {
     _token = token;
@@ -23,7 +29,7 @@ static String? _mobile;
   static String? get mobile => _mobile;
 
   // =========================
-  // HEADERS HELPERS
+  // HEADERS
   // =========================
   static Map<String, String> _headers({bool auth = false}) {
     return {
@@ -46,31 +52,30 @@ static String? _mobile;
   }
 
   // =========================
-// VERIFY OTP
-// =========================
-static Future<Map<String, dynamic>> verifyOtp(
-  String mobile,
-  String otp,
-) async {
-  final response = await http.post(
-    Uri.parse("${ApiConfig.baseUrl}/auth/verify-otp"),
-    headers: _headers(),
-    body: jsonEncode({
-      "mobile": mobile,
-      "otp": otp,
-    }),
-  );
+  // VERIFY OTP
+  // =========================
+  static Future<Map<String, dynamic>> verifyOtp(
+    String mobile,
+    String otp,
+  ) async {
+    final response = await http.post(
+      Uri.parse("${ApiConfig.baseUrl}/auth/verify-otp"),
+      headers: _headers(),
+      body: jsonEncode({
+        "mobile": mobile,
+        "otp": otp,
+      }),
+    );
 
-  final data = _handleResponse(response);
+    final data = _handleResponse(response);
 
-  // Save JWT token after successful login
-  if (data["token"] != null) {
-    _token = data["token"];
-    _mobile = mobile;
+    if (data["token"] != null) {
+      _token = data["token"];
+      _mobile = mobile;
+    }
+
+    return data;
   }
-
-  return data;
-}
 
   // =========================
   // ADMIN LOGIN
@@ -96,55 +101,53 @@ static Future<Map<String, dynamic>> verifyOtp(
     return data;
   }
 
+  // =========================
+  // CREATE ADMIN
+  // =========================
+  static Future<Map<String, dynamic>> createAdmin(
+    String mobile,
+    String password,
+  ) async {
+    final response = await http.post(
+      Uri.parse("${ApiConfig.baseUrl}/auth/create-admin"),
+      headers: _headers(auth: true),
+      body: jsonEncode({
+        "mobile": mobile,
+        "password": password,
+      }),
+    );
+
+    return _handleResponse(response);
+  }
 
   // =========================
-// CREATE ADMIN
-// =========================
-static Future<Map<String, dynamic>> createAdmin(
-  String mobile,
-  String password,
-) async {
-  final response = await http.post(
-    Uri.parse("${ApiConfig.baseUrl}/auth/create-admin"),
-    headers: _headers(auth: true),
-    body: jsonEncode({
-      "mobile": mobile,
-      "password": password,
-    }),
-  );
-
-  return _handleResponse(response);
-}
+  // GET PUBLIC CAMPS
   // =========================
-// GET PUBLISHED CAMPS
-// =========================
-static Future<Map<String, dynamic>> getPublicCamps() async {
-  final response = await http.get(
-    Uri.parse("${ApiConfig.baseUrl}/camps/public/all"),
-    headers: _headers(),
-  );
+  static Future<Map<String, dynamic>> getPublicCamps() async {
+    final response = await http.get(
+      Uri.parse("${ApiConfig.baseUrl}/camps/public/all"),
+      headers: _headers(),
+    );
 
-  return _handleResponse(response);
-}
-
-
-// =========================
-// REGISTER FOR CAMP
-// =========================
-static Future<Map<String, dynamic>> registerCamp(
-    Map<String, dynamic> data) async {
-
-  final response = await http.post(
-    Uri.parse("${ApiConfig.baseUrl}/registrations/register"),
-    headers: _headers(auth: true),
-    body: jsonEncode(data),
-  );
-
-  return _handleResponse(response);
-}
+    return _handleResponse(response);
+  }
 
   // =========================
-  // GET ALL CAMPS (ADMIN)
+  // REGISTER CAMP
+  // =========================
+  static Future<Map<String, dynamic>> registerCamp(
+      Map<String, dynamic> data) async {
+    final response = await http.post(
+      Uri.parse("${ApiConfig.baseUrl}/registrations/register"),
+      headers: _headers(auth: true),
+      body: jsonEncode(data),
+    );
+
+    return _handleResponse(response);
+  }
+
+  // =========================
+  // GET ALL CAMPS
   // =========================
   static Future<Map<String, dynamic>> getAllCamps() async {
     final response = await http.get(
@@ -156,21 +159,21 @@ static Future<Map<String, dynamic>> registerCamp(
   }
 
   // =========================
-  // CREATE CAMP (ADMIN)
+  // CREATE CAMP
   // =========================
   static Future<Map<String, dynamic>> createCamp(
-    Map<String, dynamic> data) async {
-  final response = await http.post(
-    Uri.parse("${ApiConfig.baseUrl}/camps/create"),
-    headers: _headers(auth: true),
-    body: jsonEncode(data),
-  );
+      Map<String, dynamic> data) async {
+    final response = await http.post(
+      Uri.parse("${ApiConfig.baseUrl}/camps/create"),
+      headers: _headers(auth: true),
+      body: jsonEncode(data),
+    );
 
-  return _handleResponse(response);
-}
+    return _handleResponse(response);
+  }
 
   // =========================
-  // DELETE CAMP (ADMIN)
+  // DELETE CAMP
   // =========================
   static Future<Map<String, dynamic>> deleteCamp(String id) async {
     final response = await http.delete(
@@ -182,31 +185,29 @@ static Future<Map<String, dynamic>> registerCamp(
   }
 
   // =========================
-  // GET CAMP DETAILS
+  // CAMP DETAILS
   // =========================
   static Future<Map<String, dynamic>> getCampDetails(String id) async {
     final response = await http.get(
-    Uri.parse("${ApiConfig.baseUrl}/camps/details/$id"),
-    headers: _headers(auth: true),
-  );
-
-  return _handleResponse(response);
-}
-
-  // =========================
-  // DOWNLOAD PDF REPORT
-  // =========================
-  static Future<http.Response> downloadCampReport(String id) async {
-    final response = await http.get(
-      Uri.parse("${ApiConfig.baseUrl}/camps/$id/report"),
+      Uri.parse("${ApiConfig.baseUrl}/camps/details/$id"),
       headers: _headers(auth: true),
     );
 
-    return response;
+    return _handleResponse(response);
   }
 
   // =========================
-  // RESPONSE HANDLER (SAFE)
+  // DOWNLOAD REPORT
+  // =========================
+  static Future<http.Response> downloadCampReport(String id) async {
+    return await http.get(
+      Uri.parse("${ApiConfig.baseUrl}/camps/$id/report"),
+      headers: _headers(auth: true),
+    );
+  }
+
+  // =========================
+  // RESPONSE HANDLER
   // =========================
   static dynamic _handleResponse(http.Response response) {
     final data = jsonDecode(response.body);
