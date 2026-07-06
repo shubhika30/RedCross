@@ -10,7 +10,7 @@ class UserLoginScreen extends StatefulWidget {
   State<UserLoginScreen> createState() => _UserLoginScreenState();
 }
 
-class _UserLoginScreenState extends State<UserLoginScreen> {                      
+class _UserLoginScreenState extends State<UserLoginScreen> {                                              
   final TextEditingController mobileController =
       TextEditingController();
 
@@ -104,7 +104,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                           ),
                         );
 
-                        Navigator.pushReplacement(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => const UserHomeScreen(),
