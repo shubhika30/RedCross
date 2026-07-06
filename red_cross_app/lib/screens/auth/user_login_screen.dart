@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'otp_screen.dart';
+import '../user/user_home_screen.dart';
 import 'admin_login_screen.dart';
 import '../../services/api_service.dart';
 
@@ -10,7 +10,7 @@ class UserLoginScreen extends StatefulWidget {
   State<UserLoginScreen> createState() => _UserLoginScreenState();
 }
 
-class _UserLoginScreenState extends State<UserLoginScreen> {
+class _UserLoginScreenState extends State<UserLoginScreen> {                      
   final TextEditingController mobileController =
       TextEditingController();
 
@@ -92,30 +92,24 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
 
                     try {
 
-                      final response =
-                          await ApiService.sendOtp(
-                        mobileController.text,
+                      final response = await ApiService.userLogin(
+                        mobileController.text.trim(),
                       );
 
                       if (response["success"] == true) {
 
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "OTP Sent: ${response["otp"]}",
-                            ),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Login Successful"),
                           ),
                         );
 
-                        Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => OtpScreen(
-      mobile: mobileController.text.trim(),
-    ),
-  ),
-);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const UserHomeScreen(),
+                          ),
+                        );
 
                       } else {
 
@@ -150,7 +144,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                   ),
 
                   child: const Text(
-                    "SEND OTP",
+                    "LOGIN AS USER",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,

@@ -119,6 +119,57 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
+// USER LOGIN (WITHOUT OTP)
+
+exports.userLogin = async (req, res) => {
+  try {
+    const { mobile } = req.body;
+
+    if (!mobile) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number required",
+      });
+    }
+
+    // Find existing user
+    let user = await User.findOne({ mobile });
+
+    // Auto-create if first login
+    if (!user) {
+      user = await User.create({
+        mobile,
+        role: "user",
+      });
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      token,
+      role: user.role,
+      userId: user._id,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 //  ADMIN LOGIN (SECURE)
 
 exports.adminLogin = async (req, res) => {

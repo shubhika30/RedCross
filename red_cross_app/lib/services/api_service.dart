@@ -51,6 +51,28 @@ class ApiService {
     return _handleResponse(response);
   }
 
+// =========================
+// USER LOGIN (WITHOUT OTP)
+// =========================
+static Future<Map<String, dynamic>> userLogin(String mobile) async {
+  final response = await http.post(
+    Uri.parse("${ApiConfig.baseUrl}/auth/user-login"),
+    headers: _headers(),
+    body: jsonEncode({
+      "mobile": mobile,
+    }),
+  );
+
+  final data = _handleResponse(response);
+
+  if (data["token"] != null) {
+    _token = data["token"];
+    _mobile = mobile;
+  }
+
+  return data;
+}
+
   // =========================
   // VERIFY OTP
   // =========================

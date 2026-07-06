@@ -22,22 +22,15 @@ connectDB();
 
 // Middlewares
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
   "https://6a4a177281ef5621f0f110a9--enchanting-moxie-8073b1.netlify.app",
 ];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: true,
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
   })
 );
 app.use(express.json());
